@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Dompdf\Image\Cache;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -11,6 +10,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Role;
+use Illuminate\Support\Facades\Cache;
 use Laraveldaily\Quickadmin\Observers\UserActionsObserver;
 use Laraveldaily\Quickadmin\Traits\AdminPermissionsTrait;
 
@@ -55,5 +55,14 @@ class User extends Model implements AuthenticatableContract,
 
     public function isOnline(){
         return Cache::has('user-is-online-'.$this->id);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
+
+    public function user(){
+        return $this->belongsTo('App\User');
     }
 }

@@ -8,7 +8,7 @@ use Laraveldaily\Quickadmin\Observers\UserActionsObserver;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class GameDesign extends Model {
+class Game extends Model {
 
     use SoftDeletes;
 
@@ -19,7 +19,7 @@ class GameDesign extends Model {
     */
     protected $dates = ['deleted_at'];
 
-    protected $table    = 'gamedesign';
+    protected $table    = 'games';
     
     protected $fillable = [
           'maximum_score',
@@ -32,10 +32,13 @@ class GameDesign extends Model {
     {
         parent::boot();
 
-        GameDesign::observe(new UserActionsObserver);
+        Game::observe(new UserActionsObserver);
     }
-    
-    
+
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
     
     
 }

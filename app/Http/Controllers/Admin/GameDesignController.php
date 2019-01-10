@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Redirect;
 use Schema;
-use App\GameDesign;
+use App\Game;
 use App\Http\Requests\CreateGameDesignRequest;
 use App\Http\Requests\UpdateGameDesignRequest;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class GameDesignController extends Controller {
 	 */
 	public function index(Request $request)
     {
-        $gamedesign = GameDesign::all();
+        $gamedesign = Game::all();
 
 		return view('admin.gamedesign.index', compact('gamedesign'));
 	}
@@ -48,7 +48,7 @@ class GameDesignController extends Controller {
 	public function store(CreateGameDesignRequest $request)
 	{
 	    
-		GameDesign::create($request->all());
+		Game::create($request->all());
 
 		return redirect()->route(config('quickadmin.route').'.gamedesign.index');
 	}
@@ -61,7 +61,7 @@ class GameDesignController extends Controller {
 	 */
 	public function edit($id)
 	{
-		$gamedesign = GameDesign::find($id);
+		$gamedesign = Game::find($id);
 	    
 	    
 		return view('admin.gamedesign.edit', compact('gamedesign'));
@@ -75,7 +75,7 @@ class GameDesignController extends Controller {
 	 */
 	public function update($id, UpdateGameDesignRequest $request)
 	{
-		$gamedesign = GameDesign::findOrFail($id);
+		$gamedesign = Game::findOrFail($id);
 
         
 
@@ -91,7 +91,7 @@ class GameDesignController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		GameDesign::destroy($id);
+		Game::destroy($id);
 
 		return redirect()->route(config('quickadmin.route').'.gamedesign.index');
 	}
@@ -106,9 +106,9 @@ class GameDesignController extends Controller {
     {
         if ($request->get('toDelete') != 'mass') {
             $toDelete = json_decode($request->get('toDelete'));
-            GameDesign::destroy($toDelete);
+            Game::destroy($toDelete);
         } else {
-            GameDesign::whereNotNull('id')->delete();
+            Game::whereNotNull('id')->delete();
         }
 
         return redirect()->route(config('quickadmin.route').'.gamedesign.index');
