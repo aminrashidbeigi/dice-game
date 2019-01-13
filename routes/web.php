@@ -17,7 +17,6 @@ Route::get('/', function () {
 
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
-
 Route::patch('/userprofile/update/{id}', 'Admin\UserProfileController@update')->name('userprofile.update');
+Route::get('/admin/games', 'Admin\GameDesignController@gamesList')->name('games.list');

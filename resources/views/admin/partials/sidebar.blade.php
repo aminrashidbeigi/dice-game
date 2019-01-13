@@ -64,6 +64,24 @@
                                 @endforeach
                             </ul>
                         </li>
+
+                        <li>
+                            <a href="#">
+                                <i class="fa {{ $menu->icon }}"></i>
+                                <span class="title">Games</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{ route('games.list') }}">
+                                        <i class="fa-game"></i>
+                                        <span class="title">
+                                        Game List
+                                    </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     @endif
                 @endif
             @endforeach

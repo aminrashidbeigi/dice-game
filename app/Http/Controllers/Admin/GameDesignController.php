@@ -114,4 +114,9 @@ class GameDesignController extends Controller {
         return redirect()->route(config('quickadmin.route').'.gamedesign.index');
     }
 
+    public function gamesList()
+    {
+        return "hello";
+    }
+
 }
