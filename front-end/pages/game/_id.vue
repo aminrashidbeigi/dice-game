@@ -28,7 +28,14 @@
 </template>
 
 <script>
+
 export default {
+
+    async asyncData ({ app, params }) {
+        console.log(params.id)
+        let { data } = await app.$axios.get(`https://my-api/posts/${params.id}`)
+        return {}
+    },
     data() {
         return {
             player: 0,
@@ -151,7 +158,7 @@ export default {
 }
 
 body {
-    background-image: url('../static/back.jpg');
+    /* background-image: url('../static/back.jpg'); */
     background-size: cover;
     background-position: center;
     font-family: Lato;
