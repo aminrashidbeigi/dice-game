@@ -1,6 +1,6 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
+  <v-app light>
+    <!-- <v-navigation-drawer
       :mini-variant="miniVariant"
       :clipped="clipped"
       v-model="drawer"
@@ -23,7 +23,7 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
     <v-toolbar
       :clipped-left="clipped"
       fixed
@@ -76,12 +76,12 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-footer
+    <!-- <v-footer
       :fixed="fixed"
       app
     >
       <span>&copy; 2017</span>
-    </v-footer>
+    </v-footer> -->
   </v-app>
 </template>
 
