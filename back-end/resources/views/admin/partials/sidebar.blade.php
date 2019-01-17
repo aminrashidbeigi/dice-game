@@ -73,8 +73,16 @@
                             </a>
                             <ul class="sub-menu">
                                 <li>
-                                    <a href="{{ route('games.list') }}">
-                                        <i class="fa-game"></i>
+                                    <a href="{{ route('game.index') }}">
+                                        <i class="fa-user"></i>
+                                        <span class="title">
+                                        Your Games
+                                    </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('game.list') }}">
+                                        <i class="fa-user"></i>
                                         <span class="title">
                                         Game List
                                     </span>

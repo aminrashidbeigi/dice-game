@@ -53,16 +53,17 @@ class User extends Model implements AuthenticatableContract,
         return $this->belongsTo(Role::class);
     }
 
-    public function isOnline(){
-        return Cache::has('user-is-online-'.$this->id);
-    }
-
     public function comments()
     {
         return $this->hasMany('App\Comment');
     }
 
-    public function user(){
-        return $this->belongsTo('App\User');
+    public function games()
+    {
+        return $this->hasMany('App\Game');
+    }
+
+    public function isOnline(){
+        return Cache::has('user-is-online-'.$this->id);
     }
 }

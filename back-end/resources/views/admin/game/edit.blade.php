@@ -16,18 +16,18 @@
     </div>
 </div>
 
-{!! Form::model($gamedesign, array('class' => 'form-horizontal', 'id' => 'form-with-validation', 'method' => 'PATCH', 'route' => array(config('quickadmin.route').'.gamedesign.update', $gamedesign->id))) !!}
-
+{!! Form::model($game, array('class' => 'form-horizontal', 'id' => 'form-with-validation', 'method' => 'PATCH', 'route' => array('game.update', $game->id))) !!}
+config('quickadmin.route')
 <div class="form-group">
     {!! Form::label('maximum_score', 'Maximum Score*', array('class'=>'col-sm-2 control-label')) !!}
     <div class="col-sm-10">
-        {!! Form::text('maximum_score', old('maximum_score',$gamedesign->maximum_score), array('class'=>'form-control')) !!}
+        {!! Form::text('maximum_score', old('maximum_score',$game->maximum_score), array('class'=>'form-control')) !!}
         
     </div>
 </div><div class="form-group">
     {!! Form::label('current_score', 'Current Score', array('class'=>'col-sm-2 control-label')) !!}
     <div class="col-sm-10">
-        {!! Form::text('current_score', old('current_score',$gamedesign->current_score), array('class'=>'form-control')) !!}
+        {!! Form::text('current_score', old('current_score',$game->current_score), array('class'=>'form-control')) !!}
         
     </div>
 </div><div class="form-group">
@@ -43,7 +43,7 @@
 <div class="form-group">
     <div class="col-sm-10 col-sm-offset-2">
       {!! Form::submit(trans('quickadmin::templates.templates-view_edit-update'), array('class' => 'btn btn-primary')) !!}
-      {!! link_to_route(config('quickadmin.route').'.gamedesign.index', trans('quickadmin::templates.templates-view_edit-cancel'), null, array('class' => 'btn btn-default')) !!}
+      {!! link_to_route('game.index', trans('quickadmin::templates.templates-view_edit-cancel'), null, array('class' => 'btn btn-default')) !!}
     </div>
 </div>
 

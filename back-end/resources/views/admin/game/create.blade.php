@@ -16,7 +16,7 @@
     </div>
 </div>
 
-{!! Form::open(array('route' => config('quickadmin.route').'.gamedesign.store', 'id' => 'form-with-validation', 'class' => 'form-horizontal')) !!}
+{!! Form::open(array('route' => 'game.store', 'id' => 'form-with-validation', 'class' => 'form-horizontal')) !!}
 
 <div class="form-group">
     {!! Form::label('maximum_score', 'Maximum Score*', array('class'=>'col-sm-2 control-label')) !!}
