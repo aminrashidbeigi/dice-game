@@ -1,60 +1,124 @@
 <template>
     <div>
-        <div class="dice">
-            <img src="dice-2.png" alt="Dice" id="rollDice1" hidden="hidden">
-            <img src="dice-2.png" alt="Dice" id="rollDice2" hidden="hidden">
-        </div>
-        <div class="left-side active" id="leftSide">
-            <div class="player" id="player0">Player 0</div>
-            <div class="score" id="score0">0</div>
-            <div class="current">
-                <div class="current-title">Current</div>
-                <div class="current-score" id="current0">0</div>
+        <v-container>
+            <div class="dice">
+                <img src="dice-2.png" alt="Dice" id="rollDice1" hidden="hidden">
+                <img src="dice-2.png" alt="Dice" id="rollDice2" hidden="hidden">
             </div>
-        </div>
-        <div class="right-side" id="rightSide">
-            <div class="player" id="player1">Player 1</div>
-            <div class="score" id="score1">0</div>
-            <div class="current">
-                <div class="current-title">Current</div>
-                <div class="current-score" id="current1">0</div>
+            <div class="left-side active" id="leftSide">
+                <div class="player" id="player0">Player 0</div>
+                <div class="score" id="score0">{{ user1_score }}</div>
+                <div class="current">
+                    <div class="current-title">Current</div>
+                    <div class="current-score" id="current0">{{ user1_current_score }}</div>
+                </div>
             </div>
-        </div>
-        <button class="new" id="newGame" @click="newGame"><i class="ion-ios-plus-outline"></i>New game</button>
-        <button class="roll" @click="rollDice"><i class="ion-ios-loop"></i>Roll dice</button>
-        <button class="hold" @click="hold"><i class="ion-ios-download-outline"></i>Hold</button>
-        <input type="text" placeholder="Score" class="score-box" id="score">
+            <div class="right-side" id="rightSide">
+                <div class="player" id="player1">Player 1</div>
+                <div class="score" id="score1">{{ user2_score }}</div>
+                <div class="current">
+                    <div class="current-title">Current</div>
+                    <div class="current-score" id="current1">{{ user2_current_score }}</div>
+                </div>
+            </div>
+            <button class="new" id="newGame" @click="newGame"><i class="ion-ios-plus-outline"></i>New game</button>
+            <button class="roll" @click="rollDice"><i class="ion-ios-loop"></i>Roll dice</button>
+            <button class="hold" @click="hold"><i class="ion-ios-download-outline"></i>Hold</button>
+            <input type="text" placeholder="Score" class="score-box" id="score">
+        </v-container>
+    
+        <v-comment>
+            <div>
+                <form>
+                    <v-textarea
+                    v-model="newComment"
+                    :counter="10"
+                    label="Write Your Comment"
+                    data-vv-name="newComment"
+                    required
+                    ></v-textarea>
+                    <v-btn @click="submit">Send</v-btn>
+                    <v-btn @click="close">Close</v-btn>
+                    <!-- <v-btn @click="clear">clear</v-btn> -->
+                </form>
+
+
+                <div v-for="comment in game.comments" style="margin: 10px">
+                    <v-card
+                        class="mx-auto"
+                        color="#26c6da"
+                        dark
+                    >
+                        <v-card-text class="headline font-weight-bold">
+                        {{ comment.text}}
+                        </v-card-text>
+
+                        <v-card-actions>
+                        <v-list-tile class="grow">
+                            <v-list-tile-avatar color="grey darken-3">
+                            <v-img
+                                class="elevation-6"
+                                src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                            ></v-img>
+                            </v-list-tile-avatar>
+
+                            <v-list-tile-content>
+                            <v-list-tile-title>{{ comment.user.name }}</v-list-tile-title>
+                            </v-list-tile-content>
+                        </v-list-tile>
+                        </v-card-actions>
+                    </v-card>
+                </div>
+            </div>
+        </v-comment>
     </div>
+    
 </template>
 
+
 <script>
-
+import Comment from '~/components/Comment.vue'
 export default {
-
-    async asyncData ({ app, params }) {
-        console.log(params.id)
-        let { data } = await app.$axios.get(`https://my-api/posts/${params.id}`)
-        return {}
+    async asyncData ({ app,store, params }) {
+        let id = params.id.split("-")[0]
+        let user = params.id.split("-")[1]        
+        let game = (await app.$axios.get(`http://localhost:8000/api/game/${id}`)).data.result
+        
+        return {id, user, game}
     },
     data() {
         return {
+            id: 0,
+            user: 0,
             player: 0,
             score: 0,
             oneDice: false,
             twoDice: false,
-            numberOfSixes : 0
+            numberOfSixes : 0,
+            newComment: '',
+            game: {},
+            stockData: null,
+            user1_current_score: 0,
+            user2_current_score: 0,
+            user1_score: 0,
+            user2_score: 0,
+            
         }
     },
+    components: {
+        'v-comment': Comment
+    },
+
     methods: {
          newGame() {
             this.player = 0;
             document.getElementById("rollDice1").setAttribute("hidden", "hidden");
             document.getElementById("rollDice2").setAttribute("hidden", "hidden");
             this.score = document.getElementById("score").value;
-            document.getElementById("current0").innerHTML = 0;    
-            document.getElementById("current1").innerHTML = 0;    
-            document.getElementById("score0").innerHTML = 0;    
-            document.getElementById("score1").innerHTML = 0;    
+            this.user1_current_score = 0;    
+            this.user2_current_score = 0;    
+            this.user1_score = 0;    
+            this.user2_score = 0;    
             if(!parseInt(this.score)) {
                 this.score = 100;
             }
@@ -77,8 +141,8 @@ export default {
                     }
                 }
                 var randomDice1 = eval((Math.floor(Math.random() * 6)) + 1);
-                var randomDice2 = "";
-                imageLocation = "dice-"+ randomDice1 +".png";
+                var randomDice2 = 0;
+                imageLocation = "/dice-"+ randomDice1 +".png";
                 document.getElementById("rollDice1").src = imageLocation;
                 
                 if(this.twoDice) {
@@ -96,8 +160,13 @@ export default {
             if(diceNumber1 == 6 || diceNumber2 == 6) {
                 this.numberOfSixes++;
                 if(this.numberOfSixes == 2) {
-                    document.getElementById("current" + this.player).innerHTML = 0;    
-                    document.getElementById("score" + this.player).innerHTML = 0;    
+                    if(this.player == 0) {
+                        this.user1_current_score = 0
+                        this.user1_score = 0
+                    } else if(this.player == 1) {
+                        this.user2_current_score = 0
+                        this.user2_score = 0
+                    }
                     this.changePlayer();
                     once = true;
                 }
@@ -107,22 +176,38 @@ export default {
 
             if(!once) {
                 if (parseInt(diceNumber1) == 1 || parseInt(diceNumber2) == 1) {
-                    document.getElementById("current" + this.player).innerHTML = 0;    
-                    this.changePlayer();
+                    if(this.player == 0) {
+                        this.user1_current_score = 0
+                    } else if(this.player == 1) {
+                        this.user2_current_score = 0
+                    }
                 } else {
-                    document.getElementById("current" + this.player).innerHTML = parseInt(document.getElementById("current" + this.player).innerHTML) + parseInt(diceNumber1);
+                    if(this.player == 0) {
+                        this.user1_current_score = this.user1_current_score + diceNumber1
+                    } else if(this.player == 1) {
+                        this.user2_current_score = this.user2_current_score + diceNumber1
+                    }                
                     if(this.twoDice) {
-                        document.getElementById("current" + this.player).innerHTML = parseInt(document.getElementById("current" + this.player).innerHTML) + parseInt(diceNumber2);
+                        if(this.player == 0) {
+                            this.user1_current_score = this.user1_current_score + diceNumber2
+                        } else if(this.player == 1) {
+                            this.user2_current_score = this.user2_current_score + diceNumber2
+                        }
                     }
                 }
             }
         },
         hold() {
-            document.getElementById("score" + this.player).innerHTML = 
-                parseInt(document.getElementById("score" + this.player).innerHTML) + 
-                parseInt(document.getElementById("current" + this.player).innerHTML);
-            var newScore = document.getElementById("score" + this.player).innerHTML;
-            document.getElementById("current" + this.player).innerHTML = 0;    
+            var newScore = 0
+            if(this.player == 0) {
+                this.user1_score = this.user1_score + this.user1_current_score
+                newScore = this.user1_score
+                this.user1_current_score = 0
+            } else if(this.player == 1) {
+                this.user2_score = this.user2_score + this.user2_current_score
+                newScore = this.user2_score
+                this.user2_current_score = 0
+            }
             if (parseInt(newScore) >= parseInt(this.score)) {
                 alert("player " + this.player + " win :)")
             }
@@ -145,8 +230,50 @@ export default {
                 this.player = 0;
             }
             this.changeBackground();
+            this.$axios.post(
+                `http://localhost:8000/api/gamestatus/${this.id}`, {
+                    turn: this.player, 
+                    user1_current_score: this.user1_current_score,
+                    user2_current_score: this.user1_current_score,
+                    user1_score: this.user1_score,
+                    user2_score: this.user2_score,
+                }
+            )
+
+        },
+        submit () {
+            this.$axios.post(
+                `http://localhost:8000/api/game/${this.id}/comment`, 
+                {text: this.newComment, user: this.user}
+            )
+        },
+        close () {
+            document.getElementById("popup1").setAttribute("hidden", "hidden");
+            this.newComment = ''
+        },
+        setupStream() {
+            // Not a real URL, just using for demo purposes
+            let es = new EventSource(`http://localhost:8000/api/gamestatus/${this.id}`);
+
+            es.addEventListener('message', event => {
+                // console.log("message")
+                let data = JSON.parse(event.data);
+                console.log(data)
+                this.stockData = data.stockData;
+            }, false);
+
+            es.addEventListener('error', event => {
+                if (event.readyState == EventSource.CLOSED) {
+                    console.log('Event was closed');
+                    console.log(EventSource);
+                }
+            }, false);
         }
-    }
+
+    },
+    created() {
+        this.setupStream();
+    },
 }
 </script>
 

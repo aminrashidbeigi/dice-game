@@ -57,9 +57,9 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container>
+      <!-- <v-container> -->
         <nuxt />
-      </v-container>
+      <!-- </v-container> -->
     </v-content>
     <v-navigation-drawer
       :right="right"
