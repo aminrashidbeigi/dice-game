@@ -78,7 +78,7 @@ class GameController extends Controller {
 		$game = Game::findOrFail($id);
 
 		$game->update($request->all());
-		return redirect()->route('game.index');
+        return redirect()->route('game.index');
 	}
 
 	/**
@@ -114,6 +114,6 @@ class GameController extends Controller {
     public function gamesList()
     {
         $game = Game::all();
-        return view('admin.game.index', compact('game'));
+        return view('admin.game.list', compact('game'));
     }
 }

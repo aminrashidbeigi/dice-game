@@ -17,7 +17,7 @@
                             {!! Form::checkbox('delete_all',1,false,['class' => 'mass']) !!}
                         </th>
                         <th>Maximum Score</th>
-<th>Current Score</th>
+<th>User</th>
 <th>Number Of Dice</th>
 
                         <th>&nbsp;</th>
@@ -31,13 +31,12 @@
                                 {!! Form::checkbox('del-'.$row->id,1,false,['class' => 'single','data-id'=> $row->id]) !!}
                             </td>
                             <td>{{ $row->maximum_score }}</td>
-                            <td>{{ $row->current_score }}</td>
+                            <td>{{ $row->user->name }}</td>
                             <td>{{ $row->dice_number }}</td>
                             <td>
-                                {!! link_to_route('game.edit', trans('quickadmin::templates.templates-view_index-edit'), array($row->id), array('class' => 'btn btn-xs btn-info')) !!}
-                                {!! Form::open(array('style' => 'display: inline-block;', 'method' => 'DELETE', 'onsubmit' => "return confirm('".trans("quickadmin::templates.templates-view_index-are_you_sure")."');",  'route' => array('game.destroy', $row->id))) !!}
-                                {!! Form::submit(trans('quickadmin::templates.templates-view_index-delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                {!! Form::close() !!}
+                                <a href="http://localhost:3000/game/{{ $row->id }}-{{$row->user_id}}">
+                                    <input type="button" value="Play Now" class="btn btn-success">
+                                </a>
                             </td>
                         </tr>
                     @endforeach
