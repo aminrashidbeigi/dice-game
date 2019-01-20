@@ -20,4 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('game', 'Api\GameController@index');
 Route::post('/game/{id}/comment', 'Api\CommentController@store')->name('comment.store');
 Route::get('/game/{id}', 'Api\GameController@getGame')->name('get.game');
-Route::get('/gamestatus/{id}', 'Api\GameStatusController@sendGameStatus')->name('gamestatus');
+Route::get('/gamestatus/{id}', 'Api\GameStatusController@sendGameStatus')->name('gamestatus.get');
+Route::post('/gamestatus/{id}/update/', 'Api\GameStatusController@sendGameUpdate')->name('gamestatus.update');

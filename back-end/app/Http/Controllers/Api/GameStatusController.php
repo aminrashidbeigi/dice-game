@@ -14,50 +14,24 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class GameStatusController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     */
-    public function index(Request $request)
-    {
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     */
-    public function hold(Request $request, $id)
+    public function sendGameUpdate(Request $request, $id)
     {
         $gameStatus = new GameStatus();
-        $gameStatus->game_id = $request->all()['game_id'];
+        $gameStatus->game_id = $id;
         $gameStatus->turn = $request->all()['turn'];
         $gameStatus->user1_score = $request->all()['user1_score'];
-        $gameStatus->user2_score = $request->all()['user1_score'];
+        $gameStatus->user2_score = $request->all()['user2_score'];
         $gameStatus->user1_current_score = $request->all()['user1_current_score'];
         $gameStatus->user2_current_score = $request->all()['user2_current_score'];
+        $gameStatus->dice1 = $request->all()['dice1'];
+        $gameStatus->dice2 = $request->all()['dice2'];
+        $gameStatus->status = $request->all()['status'];
         $gameStatus->save();
-
-        $response = new StreamedResponse(function() use ($request, $gameStatus) {
-            while(true) {
-                echo 'data: ' . json_encode($gameStatus) . "\n\n";
-                ob_flush();
-                flush();
-                usleep(200000);
-            }
-        });
-        $response->headers->set('Content-Type', 'text/event-stream');
-        $response->headers->set('X-Accel-Buffering', 'no');
-        $response->headers->set('Cach-Control', 'no-cache');
-        return $response;
+        return response()->json([]);
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, $id)
     {
         $comment = new Comment();
@@ -118,12 +92,10 @@ class GameStatusController extends Controller
     {
         $gameStatus = DB::table('game_status')->where('game_id', $id)->orderBy('id', 'desc')->first();
         $response = new StreamedResponse(function() use ($request, $gameStatus) {
-            while(true) {
-                echo 'data: ' . json_encode($gameStatus) . "\n\n";
-                ob_flush();
-                flush();
-                usleep(200000);
-            }
+            echo 'data: ' . json_encode($gameStatus) . "\n\n";
+            ob_flush();
+            flush();
+            usleep(200000);
         });
         $response->headers->set('Content-Type', 'text/event-stream');
         $response->headers->set('X-Accel-Buffering', 'no');

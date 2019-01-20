@@ -16,8 +16,8 @@ class CreateGameStatusTable extends Migration
         Schema::create('game_status', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('game_id');
-            $table->integer('user1_id');
-            $table->integer('user2_id');
+//            $table->integer('user1_id');
+//            $table->integer('user2_id');
             $table->integer('turn');
             $table->integer('user1_current_score');
             $table->integer('user2_current_score');
@@ -25,9 +25,10 @@ class CreateGameStatusTable extends Migration
             $table->integer('user2_score');
             $table->string('status');
             $table->integer('dice1');
-            $table->integer('dice2');
-            $table->integer('dice3');
-            $table->integer('dice4');
+            $table->integer('dice2')->nullable();
+            $table->integer('dice3')->nullable();
+            $table->integer('dice4')->nullable();
+            $table->timestamps();
         });
     }
 
