@@ -2,7 +2,7 @@
     <div>
         <v-container>
             <div class="dice">
-                <img src="dice-2.png" alt="Dice" id="rollDice1" hidden="hidden">
+                <img src="dice-2.png" alt="Dice" id="rollDice1">
                 <img src="dice-2.png" alt="Dice" id="rollDice2" hidden="hidden">
             </div>
             <div class="left-side active" id="leftSide">
@@ -24,7 +24,7 @@
             <button class="new" id="newGame" @click="newGame"><i class="ion-ios-plus-outline"></i>New game</button>
             <button class="roll" @click="rollDice"><i class="ion-ios-loop"></i>Roll dice</button>
             <button class="hold" @click="hold"><i class="ion-ios-download-outline"></i>Hold</button>
-            <input type="text" placeholder="Score" class="score-box" id="score">
+            <input type="text" placeholder="Score" class="score-box" v-model="score">
         </v-container>
     
         <v-comment>
@@ -83,7 +83,6 @@ export default {
         let id = params.id.split("-")[0]
         let user = params.id.split("-")[1]        
         let game = (await app.$axios.get(`http://localhost:8000/api/game/${id}`)).data.result
-        
         return {id, user, game}
     },
     data() {
@@ -91,18 +90,19 @@ export default {
             id: 0,
             user: 0,
             player: 0,
-            score: 0,
+            score: 100,
             oneDice: false,
             twoDice: false,
+            dice1: 0,
+            dice2: null,
             numberOfSixes : 0,
             newComment: '',
             game: {},
-            stockData: null,
             user1_current_score: 0,
             user2_current_score: 0,
             user1_score: 0,
             user2_score: 0,
-            
+            status: 'pending'
         }
     },
     components: {
@@ -112,16 +112,12 @@ export default {
     methods: {
          newGame() {
             this.player = 0;
-            document.getElementById("rollDice1").setAttribute("hidden", "hidden");
+            // document.getElementById("rollDice1").setAttribute("hidden", "hidden");
             document.getElementById("rollDice2").setAttribute("hidden", "hidden");
-            this.score = document.getElementById("score").value;
             this.user1_current_score = 0;    
             this.user2_current_score = 0;    
             this.user1_score = 0;    
             this.user2_score = 0;    
-            if(!parseInt(this.score)) {
-                this.score = 100;
-            }
             var person = prompt("Play with one dice or two?", "1");
 
             if (person == 1 || person == "") {
@@ -131,28 +127,34 @@ export default {
                 this.oneDice = false;
                 this.twoDice = true;
             }
+            this.status = 'playing'
+            this.sendGameStatus()
         },
         rollDice() {
-            if(this.score) {
+            if(this.score || this.status != 'pending') {
                 if (document.getElementById("rollDice1").hasAttribute("hidden")) {
                     document.getElementById("rollDice1").removeAttribute("hidden");
                     if(this.twoDice) {
                         document.getElementById("rollDice2").removeAttribute("hidden");
                     }
                 }
-                var randomDice1 = eval((Math.floor(Math.random() * 6)) + 1);
-                var randomDice2 = 0;
-                imageLocation = "/dice-"+ randomDice1 +".png";
-                document.getElementById("rollDice1").src = imageLocation;
-                
+                this.dice1 = eval((Math.floor(Math.random() * 6)) + 1);
                 if(this.twoDice) {
-                    randomDice2 = eval((Math.floor(Math.random() * 6)) + 1);
-                    var imageLocation = "dice-"+ randomDice2 +".png";
-                    document.getElementById("rollDice2").src = imageLocation;
+                    this.dice2 = eval((Math.floor(Math.random() * 6)) + 1);
                 }
-                this.updateCurrentScore(randomDice1, randomDice2);
+                this.updateDiceImage(this.dice1, this.dice2)        
+                this.updateCurrentScore(this.dice1, this.dice2);
             } else {
                 alert("please set new game");
+            }
+        },
+        updateDiceImage(dice1, dice2){
+            imageLocation = "/dice-"+ dice1 +".png";
+            document.getElementById("rollDice1").src = imageLocation;
+            
+            if(this.twoDice) {
+                var imageLocation = "dice-"+ dice2 +".png";
+                document.getElementById("rollDice2").src = imageLocation;
             }
         },
         updateCurrentScore(diceNumber1, diceNumber2) {
@@ -196,6 +198,7 @@ export default {
                     }
                 }
             }
+            this.sendGameStatus()
         },
         hold() {
             var newScore = 0
@@ -208,10 +211,12 @@ export default {
                 newScore = this.user2_score
                 this.user2_current_score = 0
             }
-            if (parseInt(newScore) >= parseInt(this.score)) {
+            if (newScore >= this.score) {
                 alert("player " + this.player + " win :)")
+                this.status = 'finished'
             }
-            this.changePlayer();
+            this.changePlayer()
+            this.sendGameStatus()
         },
         changeBackground() {
             if (this.player == 0 ) {
@@ -229,17 +234,8 @@ export default {
             } else {
                 this.player = 0;
             }
-            this.changeBackground();
-            this.$axios.post(
-                `http://localhost:8000/api/gamestatus/${this.id}`, {
-                    turn: this.player, 
-                    user1_current_score: this.user1_current_score,
-                    user2_current_score: this.user1_current_score,
-                    user1_score: this.user1_score,
-                    user2_score: this.user2_score,
-                }
-            )
-
+            this.changeBackground()
+            this.sendGameStatus()
         },
         submit () {
             this.$axios.post(
@@ -251,6 +247,20 @@ export default {
             document.getElementById("popup1").setAttribute("hidden", "hidden");
             this.newComment = ''
         },
+        sendGameStatus() {
+            this.$axios.post(
+                `http://localhost:8000/api/gamestatus/${this.id}/update/`, {
+                    turn: this.player, 
+                    user1_current_score: this.user1_current_score,
+                    user2_current_score: this.user2_current_score,
+                    user1_score: this.user1_score,
+                    user2_score: this.user2_score,
+                    dice1: this.dice1,
+                    dice2: this.dice2,
+                    status: this.status
+                }
+            )
+        },
         setupStream() {
             // Not a real URL, just using for demo purposes
             let es = new EventSource(`http://localhost:8000/api/gamestatus/${this.id}`);
@@ -258,8 +268,17 @@ export default {
             es.addEventListener('message', event => {
                 // console.log("message")
                 let data = JSON.parse(event.data);
-                console.log(data)
-                this.stockData = data.stockData;
+                // console.log(data)
+                this.user1_current_score = data.user1_current_score
+                this.user2_current_score = data.user2_current_score
+                this.user1_score = data.user1_score
+                this.user2_score = data.user2_score
+                this.dice1 = data.dice1
+                this.dice2 = data.dice2
+                this.player = data.turn
+                this.status = data.status
+                this.updateDiceImage(this.dice1, this.dice2)        
+                this.changeBackground()
             }, false);
 
             es.addEventListener('error', event => {
@@ -269,7 +288,6 @@ export default {
                 }
             }, false);
         }
-
     },
     created() {
         this.setupStream();

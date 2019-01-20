@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\GameStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
@@ -115,5 +116,12 @@ class GameController extends Controller {
     {
         $game = Game::all();
         return view('admin.game.list', compact('game'));
+    }
+
+    public function playingGames()
+    {
+        $playingGameIds = array_unique(GameStatus::where('status', 'playing')->get());
+        $games = Game::whereIn('id', $playingGameIds)->get();
+        return view('admin.game.playing', compact('game'));
     }
 }

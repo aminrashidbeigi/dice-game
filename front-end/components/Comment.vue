@@ -2,7 +2,7 @@
     <div>
         <div class="box">
             <a href="#popup1">
-              <img src="/dice-1.png">
+              <img src="/chat.png">
             </a>
         </div>
 
@@ -20,10 +20,10 @@
 
 .box {
     position: fixed;
-    right: 0;
-    bottom: 0;
-    height: 100px;
-    width: 100px;
+    right: 10px;
+    bottom: 10px;
+    height: 64px;
+    width: 64px;
 }
 
 .box img {
