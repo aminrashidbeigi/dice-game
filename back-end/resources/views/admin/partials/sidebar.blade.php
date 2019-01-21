@@ -88,6 +88,14 @@
                                     </span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('game.playing') }}">
+                                        <i class="fa-user"></i>
+                                        <span class="title">
+                                        Playing Games
+                                    </span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     @endif

@@ -120,8 +120,8 @@ class GameController extends Controller {
 
     public function playingGames()
     {
-        $playingGameIds = array_unique(GameStatus::where('status', 'playing')->get());
+        $playingGameIds = GameStatus::where('status', 'playing')->get();
         $games = Game::whereIn('id', $playingGameIds)->get();
-        return view('admin.game.playing', compact('game'));
+        return view('admin.game.playing', compact('games'));
     }
 }

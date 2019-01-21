@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Game;
+use App\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $games = \App\Game::all();
+        $users = \App\User::all();
+        $onlineUsers = [];
+        foreach ($users as $user) {
+            if ($user->isOnline()) {
+                $onlineUsers[] = $user;
+            }
+        }
+        return view('welcome')->with('games', $games)->with('onlineUsers', $onlineUsers);
     }
 }

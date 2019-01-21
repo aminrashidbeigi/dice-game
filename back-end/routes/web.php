@@ -11,15 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
+Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
 Route::patch('/userprofile/update/{id}', 'Admin\UserProfileController@update')->name('userprofile.update');
 Route::get('/admin/gamesList', 'Admin\GameController@gamesList')->name('game.list');
+Route::get('/admin/game/playing', 'Admin\GameController@playingGames')->name('game.playing');
+Route::resource('/admin/game', 'Admin\GameController');
 Route::resource('/admin/game', 'Admin\GameController');
 Route::post('/comment/accept/{id}', 'Admin\CommentAcceptController@acceptComment')->name('comment.accept');
 Route::post('/comment/reject/{id}', 'Admin\CommentAcceptController@rejectComment')->name('comment.reject');
